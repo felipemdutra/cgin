@@ -52,16 +52,16 @@ int router_run(router_t* r) {
             continue;
         }
 
-        int client_sock = sock_accept_conn(r->sockfd);
-        if (client_sock < 0) {
+        client_t *client = sock_accept_conn(r->sockfd);
+        if (client->sockfd < 0) {
             printf("failed to accept connection: %s\n", strerror(errno));
             continue;
         }
 
         // Allocating and freeing memory for every request might not be the
         // best way of doing this but oh well...
-        struct ReqInfo* info = read_req(client_sock);
-        if (handle_req(r, info) < 0) {
+        struct ReqInfo* info = read_req(client);
+        if (handle_req(r, client, info) < 0) {
             continue;
         }
     } 
