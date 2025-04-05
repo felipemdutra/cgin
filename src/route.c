@@ -11,7 +11,7 @@
 void routeGET(router_t* r, char *path, route_handler_fn handler_fn) {
     // If we reach max routes, allocate more memory.
     if (r->route_count >= r->route_capacity) {
-        // Set realloc return val to temporary variable, to avoid memory leaks.
+        // Set realloc return to temporary variable, to avoid memory leaks.
         size_t new_capacity = r->route_capacity * 2;
 
         route_t* temp_arr = realloc(r->routes, new_capacity * sizeof(route_t));
@@ -39,19 +39,22 @@ void routeGET(router_t* r, char *path, route_handler_fn handler_fn) {
     r->route_count++;
 }
 
-struct ReqInfo* read_req(int clientsock) {
+struct ReqInfo* read_req(client_t *client) {
     char buffer[512], method[10], path[256], version[20];
     struct ReqInfo *info = malloc(sizeof(struct ReqInfo));
     if (!info) {
         return NULL;
     }
 
-    if (read(clientsock, buffer, sizeof(buffer)) < 0) {
+    if (read(client->sockfd, buffer, sizeof(buffer)) < 0) {
         printf("FAILED TO READ CLIENT SOCK: %s\n", strerror(errno));
+        free(info);
+        return NULL;
     }
 
     if (sscanf(buffer, "%s %s %s", method, path, version) != 3) {
         printf("FAILED TO PARSE REQUEST\n");
+        free(info);
         return NULL;
     }
 
@@ -62,6 +65,24 @@ struct ReqInfo* read_req(int clientsock) {
     return info;
 }
 
-int handle_req(router_t *r, struct ReqInfo *info) {
+int handle_req(router_t *r, client_t *client, struct ReqInfo* info) {
+    /* Check if info's path exists in r's routes array */
+    for (size_t i = 0; i < r->route_count; ++i) {
+
+        // Reference route for cleaner code.
+        route_t *route = &r->routes[i];
+
+        // Both needs to be zero
+        int is_path_equal = strcmp(route->path, info->path);
+        int is_method_equal = strcmp(route->method, info->method);
+
+        // We found the matching route, execute it's handler function
+        if (is_path_equal == 0 && is_method_equal == 0) {
+            route->handler(client);
+            return 0;
+        }
+    }
+
+    return -1;
 }
 
