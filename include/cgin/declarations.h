@@ -10,8 +10,8 @@ typedef int (*route_handler_fn)(int client_sock);
 typedef void (*routerGET)(router_t*, char*, route_handler_fn);
 
 typedef struct {
-    const char *method;       // e.g. GET, POST, etc...
-    const char *path;         // e.g. "/home/user/me"
+    char *method;       // e.g. GET, POST, etc...
+    char *path;         // e.g. "/home/user/me"
     route_handler_fn handler;
 } route_t;
 
