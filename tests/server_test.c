@@ -1,11 +1,13 @@
 #include <cgin/server.h>
 #include <stdio.h>
 
+#include "cgin/client.h"
 #include "cgin/declarations.h"
 
 int home_handler(client_t* c) {
-    (void)c;
-    printf("Welcome home!\n");
+    printf("HI THERE!\n");
+    serve_html(c, "./html/homePage.html");
+
     return 0;
 }
 
