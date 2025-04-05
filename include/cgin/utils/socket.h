@@ -3,6 +3,8 @@
 
 #define MAX_BACKLOG 10
 
+#include "cgin/declarations.h"
+
 /**
  * Creates and returns a new AF_INET socket.
  * @return 0 on success, -1 on failure.
@@ -18,7 +20,7 @@ int new_socket();
  */
 int bind_socket(int sockfd, int port);
 int sock_listen(int sock);
-int sock_accept_conn(int sock);
+client_t* sock_accept_conn(int sock);
 
 #endif
 
