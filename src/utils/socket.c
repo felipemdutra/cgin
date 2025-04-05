@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
 #include "cgin/utils/socket.h"
+#include "cgin/client.h"
+#include "cgin/declarations.h"
 
 static int enable_so_reuseaddr(int sock) {
     const int opt = 1;
@@ -51,7 +54,7 @@ int sock_listen(int sock) {
     return 0;
 }
 
-int sock_accept_conn(int sock) {
+client_t* sock_accept_conn(int sock) {
     int client_sock;
     
     struct sockaddr_in client_addr;
@@ -60,11 +63,16 @@ int sock_accept_conn(int sock) {
 
     client_sock = accept(sock, (struct sockaddr*)&client_addr, &client_addr_len);
     if (client_sock < 0) {
-        return -1;
+        return NULL;
+    }
+
+    client_t *client = new_client(client_sock, client_addr);
+    if (!client) {
+        perror("FAILED TO CREATE NEW CLIENT");
     }
 
     printf("Client successfully connected!\n");
 
-    return client_sock;
+    return client;
 }
 
