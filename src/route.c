@@ -8,7 +8,7 @@
 #include "cgin/route.h"
 #include "cgin/declarations.h"
 
-void routeGET(router_t* r, char *path, route_handler_fn handler_fn) {
+void routeGET(router_t *r, char *path, route_handler_fn handler_fn) {
     // If we reach max routes, allocate more memory.
     if (r->route_count >= r->route_capacity) {
         // Set realloc return to temporary variable, to avoid memory leaks.
@@ -28,7 +28,7 @@ void routeGET(router_t* r, char *path, route_handler_fn handler_fn) {
     // create new route
     route_t new_route;
     
-    strcpy(new_route.path, path);
+    new_route.path = path;
     new_route.method = "GET";
     new_route.handler = handler_fn;
 
@@ -78,7 +78,10 @@ int handle_req(router_t *r, client_t *client, struct ReqInfo* info) {
 
         // We found the matching route, execute it's handler function
         if (is_path_equal == 0 && is_method_equal == 0) {
-            route->handler(client);
+            if (route->handler(client) != 0) {
+                return -1; 
+            }
+
             return 0;
         }
     }
