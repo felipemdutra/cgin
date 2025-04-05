@@ -28,7 +28,7 @@ void routeGET(router_t* r, char *path, route_handler_fn handler_fn) {
     // create new route
     route_t new_route;
     
-    strcpy(path, new_route.path);
+    strcpy(new_route.path, path);
     new_route.method = "GET";
     new_route.handler = handler_fn;
 
