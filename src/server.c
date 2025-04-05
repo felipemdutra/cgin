@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cgin/server.h"
+#include "cgin/declarations.h"
 #include "cgin/utils/socket.h"
+#include "cgin/server.h"
+#include "cgin/route.h"
 
 #define INITIAL_ROUTE_CAPACITY 5 
 
@@ -32,6 +34,8 @@ router_t* new_router(const int port) {
     r->route_count = 0;
 
     r->routes = malloc(r->route_capacity * sizeof(route_t));
+
+    r->GET = routeGET;
     
     return r;
 }
@@ -51,6 +55,13 @@ int router_run(router_t* r) {
         int client_sock = sock_accept_conn(r->sockfd);
         if (client_sock < 0) {
             printf("failed to accept connection: %s\n", strerror(errno));
+            continue;
+        }
+
+        // Allocating and freeing memory for every request might not be the
+        // best way of doing this but oh well...
+        struct ReqInfo* info = read_req(client_sock);
+        if (handle_req(r, info) < 0) {
             continue;
         }
     } 
