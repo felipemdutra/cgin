@@ -5,8 +5,6 @@ framework. It is a separate, independent project inspired by the concepts of
 minimalism and performance, but not a port or official implementation of Gin in
 C.
 
-> Note: cgin is *not* maintained by the authors of Gin.
-
 # About
 
 cgin is a minimal HTTP API library written in C, inspired by the Gin web
