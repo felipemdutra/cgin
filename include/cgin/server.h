@@ -3,20 +3,7 @@
 
 #include <stddef.h>
 
-#include "cgin/route.h"
-
-typedef void (*router_get)(char*, char*, route_handler_fn);
-
-typedef struct {
-    int port;
-    int sockfd;            // Router's socket file descriptor
-
-    route_t *routes;       // Array of routes
-    size_t route_count;    // Current route count
-    size_t route_capacity; /* Max routes before having to reallocate memory for 
-                              route_t *routes */
-    router_get GET;
-} router_t;
+#include "cgin/declarations.h"
 
 /**
  * Allocates memory for a router_t 
