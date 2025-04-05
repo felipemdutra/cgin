@@ -20,14 +20,14 @@ void routeGET(router_t *r, char *path, route_handler_fn);
  * @return The requested path, which can then be used to compare to router_t's
  * routes path's, or NULL on failure.
  */
-struct ReqInfo* read_req(int clientsock);
+struct ReqInfo* read_req(client_t *client);
 
 /**
  * This function compares the information given in @param info to all routes
  * associated with @param r. If no route matches, 404 that bitch, else we call
  * the matching route's handler function.
  */
-int handle_req(router_t *r, struct ReqInfo* info);
+int handle_req(router_t *r, client_t *client, struct ReqInfo* info);
 
 #endif
 
