@@ -8,5 +8,7 @@
 client_t* new_client(int client_sock, struct sockaddr_in client_addr);
 void free_client(client_t *client);
 
+int serve_html(client_t *client, const char *file_path);
+
 #endif
 
