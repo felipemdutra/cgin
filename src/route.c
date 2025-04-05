@@ -58,9 +58,14 @@ struct ReqInfo* read_req(client_t *client) {
         return NULL;
     }
 
-    strcpy(info->path, path);
-    strcpy(info->method, method);
-    strcpy(info->version, version);
+    strncpy(info->path, path, sizeof(info->path) - 1);
+    info->path[sizeof(info->path) - 1] = '\0';
+
+    strncpy(info->method, method, sizeof(info->method) - 1);
+    info->method[sizeof(info->method) - 1] = '\0';
+
+    strncpy(info->version, version, sizeof(info->version) - 1);
+    info->version[sizeof(info->version) - 1] = '\0';
 
     return info;
 }
