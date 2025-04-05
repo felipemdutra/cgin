@@ -1,12 +1,14 @@
 #ifndef __DECLARATIONS_H__
 #define __DECLARATIONS_H__
 
+#include <netinet/in.h>
 #include <stddef.h>
 
 // Needed for routerGET function pointer
 typedef struct router_t router_t;
+typedef struct client_t client_t;
 
-typedef int (*route_handler_fn)(int client_sock);
+typedef int (*route_handler_fn)(client_t*);
 typedef void (*routerGET)(router_t*, char*, route_handler_fn);
 
 typedef struct {
@@ -25,6 +27,12 @@ typedef struct router_t {
                               route_t *routes */
     routerGET GET;
 } router_t;
+
+typedef struct client_t {
+    int sockfd;
+    struct sockaddr_in addr;
+    
+} client_t;
 
 struct ReqInfo {
     char method[10];
