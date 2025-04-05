@@ -7,6 +7,7 @@
 #include "cgin/utils/socket.h"
 #include "cgin/server.h"
 #include "cgin/route.h"
+#include "cgin/client.h"
 
 #define INITIAL_ROUTE_CAPACITY 5 
 
@@ -61,9 +62,21 @@ int router_run(router_t* r) {
         // Allocating and freeing memory for every request might not be the
         // best way of doing this but oh well...
         struct ReqInfo* info = read_req(client);
+        if (!info) {
+            free_client(client);
+            return -1;
+        }
+
         if (handle_req(r, client, info) < 0) {
+            free_client(client);
+            free(info);
             continue;
         }
+
+        free(info);
+        free(client);
     } 
+    
+    return 0;
 }
 
